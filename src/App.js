@@ -1,8 +1,11 @@
 import './App.css'
+import Spending from './pages/Spending'
 
 function App () {
   return (
-    <div>test</div>
+    <div>
+      <Spending />
+    </div>
   )
 }
 
