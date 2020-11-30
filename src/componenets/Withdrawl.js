@@ -1,34 +1,23 @@
 import React, { useState } from 'react'
 import Select from './Select'
 
-function DepositWithdrawl () {
-  const [withdrawl, setwithdrawl] = useState({ type: 'withdrawl' })
-  const [catOptions, setCatOptions] = useState([
-    'Grocery',
-    'Food Out',
-    'Extra',
-    'Bill',
-    'Debt',
-    'Gas',
-    'Health',
-    'Undefined'
-  ])
-  const [cardOptions, setCardOptions] = useState(['**** **** **** 0000'])
-
+function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOptions, catOptions }) {
   const handleChange = e => {
     const { name, value } = e.target
-    setwithdrawl({ ...withdrawl, [name]: value })
+    if (transaction.type !== 'withdrawl') {
+      setTransaction({})
+    }
+    setTransaction({ ...transaction, type: 'withdrawl', [name]: value })
   }
-  console.log('withdrawl==>>', withdrawl)
+
   return (
     <div className='col-md-6'>
       <h1 className='mt-3'>Withdraw</h1>
       <div className='row px-4'>
-        <label for='w_amount'>Amount</label>
+        <label for='amount'>Amount</label>
         <div className='input-group mb-3'>
           <input
-            id='w_amount'
-            name='amount'
+            name='withdrawlAmount'
             type='number'
             className='form-control'
             onChange={(e) => handleChange(e)}
@@ -63,7 +52,7 @@ function DepositWithdrawl () {
         </div>
       </div>
       <div className='px-2 mt-3 w-100'>
-        <button id='with' className='btn-primary p-3'>Submit</button>
+        <button className='btn-primary p-3' onClick={() => handleSubmit()}>Submit</button>
       </div>
     </div>
   )
