@@ -11,3 +11,16 @@ a {
   color: #333;
   text-decoration: none;
 }
+
+.table_row {
+  transition: 0.25s;
+}
+
+.table_row:hover {
+  transform: scale(1.008);
+  background-color: #e8e8ee;
+}
+
+.table_row:active {
+  transform: scale(0.99);
+}

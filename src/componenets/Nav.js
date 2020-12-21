@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Select from './Select'
 
 function Nav () {
-  const [catOptions, setCatOptions] = useState([
+  const [catOptions] = useState([
     { item: 'Grocery', itemId: 1 },
     { item: 'Food Out', itemId: 2 },
     { item: 'Extra', itemId: 3 },

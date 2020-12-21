@@ -1,17 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Select from './Select'
+import { useForm } from 'react-hook-form'
 
-function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOptions, catOptions }) {
-  const handleChange = e => {
-    const { name, value } = e.target
-    if (transaction.type !== 'withdrawl') {
-      setTransaction({})
-    }
-    setTransaction({ ...transaction, type: 'withdrawl', [name]: value })
+function DepositWithdrawl ({
+  transaction,
+  setTransaction,
+  handleSubmit,
+  cardOptions,
+  catOptions,
+  handleChange,
+  toggle,
+  setToggle
+
+}) {
+  const { register, reset } = useForm()
+
+  const clear = () => {
+    setToggle('')
+    reset()
   }
 
   return (
-    <div className='col-md-6'>
+    <form
+      className='col-lg-6' onSubmit={(e) => handleSubmit(e)}
+    >
       <h1 className='mt-3'>Withdraw</h1>
       <div className='row px-4'>
         <label for='amount'>Amount</label>
@@ -20,7 +32,9 @@ function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOpti
             name='withdrawlAmount'
             type='number'
             className='form-control'
-            onChange={(e) => handleChange(e)}
+            ref={register({ required: true })}
+            disabled={toggle === 'deposit'}
+            onChange={(e) => handleChange(e, 'withdrawl')}
           />
         </div>
       </div>
@@ -29,7 +43,10 @@ function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOpti
           label='Card Used'
           name='cardUsed'
           handleChange={handleChange}
+          ref={register({ required: true })}
+          disabled={toggle === 'deposit'}
           optionsArr={cardOptions}
+          type='withdrawl'
         />
       </div>
       <div className='row px-4 mb-3'>
@@ -37,7 +54,10 @@ function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOpti
           label='Category'
           name='category'
           handleChange={handleChange}
+          ref={register({ required: true })}
+          disabled={toggle === 'deposit'}
           optionsArr={catOptions}
+          type='withdrawl'
         />
       </div>
       <div className='row px-4'>
@@ -47,14 +67,17 @@ function DepositWithdrawl ({ transaction, setTransaction, handleSubmit, cardOpti
             type='text'
             className='form-control'
             name='paidTo'
-            onChange={(e) => handleChange(e)}
+            ref={register({ required: true })}
+            disabled={toggle === 'deposit'}
+            onChange={(e) => handleChange(e, 'withdrawl')}
           />
         </div>
       </div>
       <div className='px-2 mt-3 w-100'>
-        <button className='btn-primary p-3' onClick={() => handleSubmit()}>Submit</button>
+        <button type='button' className='btn-primary p-3' onClick={() => clear()}>Clear</button>
+        <button type='submit' className='btn-primary  ml-2 p-3' onClick={() => reset()}>Submit</button>
       </div>
-    </div>
+    </form>
   )
 }
 

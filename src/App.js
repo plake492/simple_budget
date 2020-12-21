@@ -1,12 +1,15 @@
 import './App.css'
 import Spending from './pages/Spending'
 import Nav from './componenets/Nav'
+import { StoreProvider } from './utils/GlobalState'
 
 function App () {
   return (
     <div>
-      <Nav />
-      <Spending />
+      <StoreProvider>
+        <Nav />
+        <Spending />
+      </StoreProvider>
     </div>
   )
 }
