@@ -4,19 +4,16 @@ const StoreContext = createContext()
 const { Provider } = StoreContext
 
 const reducer = (state, action) => {
-  console.log('state, action==>>', state, action)
   switch (action.type) {
-    case 'NEW_TRANSACTION':
-      return {
-        ...state,
-        transaction: action.transaction
-      }
-    case 'SUBMIT_TRANSACTION':
+    case 'INITIALIZE_BUDGET':
 
       return {
         ...state,
-        transactionArr: [...action.transactionArr, state.transaction]
+        originArr: action.originArr,
+        transactionArr: action.transactionArr,
+        currentBalance: action.currentBalance
       }
+
     default:
       return state
   }
@@ -24,8 +21,9 @@ const reducer = (state, action) => {
 
 const StoreProvider = ({ value = [], ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
-    transaction: {},
-    transactionArr: []
+    originArr: [],
+    transactionArr: [],
+    currentBalance: 0
   })
 
   return <Provider value={[state, dispatch]} {...props} />

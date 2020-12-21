@@ -38,7 +38,7 @@ function DepositWithdrawl ({
           />
         </div>
       </div>
-      <div className='row px-4 mb-3'>
+      {/* <div className='row px-4 mb-3'>
         <Select
           label='Card Used'
           name='cardUsed'
@@ -48,7 +48,7 @@ function DepositWithdrawl ({
           optionsArr={cardOptions}
           type='withdrawl'
         />
-      </div>
+      </div> */}
       <div className='row px-4 mb-3'>
         <Select
           label='Category'
@@ -67,6 +67,19 @@ function DepositWithdrawl ({
             type='text'
             className='form-control'
             name='paidTo'
+            ref={register({ required: true })}
+            disabled={toggle === 'deposit'}
+            onChange={(e) => handleChange(e, 'withdrawl')}
+          />
+        </div>
+      </div>
+      <div className='row px-4'>
+        <label for='paidTo'> Notes</label>
+        <div className='input-group mb-3'>
+          <textarea
+            type='text'
+            className='form-control'
+            name='notes'
             ref={register({ required: true })}
             disabled={toggle === 'deposit'}
             onChange={(e) => handleChange(e, 'withdrawl')}

@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
 import { format } from 'date-fns'
 import TableRow from './TableRow'
+import SearchCategory from './SearchCategory'
 
 function SpendingTable ({
   transactionArr,
   setTransactionArr,
   setCurrentBalance,
-  updateCurrentBalance
+  updateCurrentBalance,
+  searchByCat,
+  catOptions,
+  resetCat,
+  setSearchByCat,
+  handleChangeSearch,
+  catCurrentBalance,
+  searchByKeyWord,
+  handleChangeKeyword
 }) {
   const [showLineItem, setShowLineItem] = useState(false)
   const [lineItem, setLineitem] = useState('')
@@ -19,7 +28,6 @@ function SpendingTable ({
 
   const removeItem = (_id) => {
     const newArr = transactionArr.filter(item => item._id !== _id)
-    console.log('newArr==>>', newArr)
     setTransactionArr(newArr)
     setShowLineItem(false)
     updateCurrentBalance(newArr)
@@ -35,50 +43,62 @@ function SpendingTable ({
   }
 
   return (
-    <div className='col-lg-6'>
-      <div className='jumbotron'>
-        {!showLineItem
-          ? (
-            <>
-              <div className='d-flex justify-content-between'>
-                <h1 className='text-center pt-2'>Balance Sheet</h1>
-                <button style={{ height: '20px', backgroundColor: 'red' }} onClick={() => clearAll()}>CLEAR</button>
-                {/* <p>Current Balence: {currentBalance}</p> */}
-              </div>
-              <table className='table text-center'>
-                <thead>
-                  <tr>
-                    <th scope='col'>Date</th>
-                    <th scope='col'>Place</th>
-                    <th scope='col'>Category</th>
-                    <th scope='col'>Withdrawal</th>
-                    <th scope='col'>Deposit</th>
-                    <th scope='col'>Available</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <TableRow
-                    transactionArr={transactionArr}
-                    // currentBalance={currentBalance}
-                    displayLineItem={displayLineItem}
-                  />
-                </tbody>
-              </table>
-            </>
-          ) : (
-            <div>
-              <p>{format(lineItem.date, 'LL/dd')}</p>
-              <p>{lineItem.paidTo}</p>
-              <p>{lineItem.category}</p>
-              <p>{lineItem.withdrawlAmount}</p>
-              <p>{lineItem.depositAmount}</p>
-              <p>{lineItem.currentBalance}</p>
-              <button onClick={(e) => setShowLineItem(false)}>show all</button>
-              <button onClick={(e) => removeItem(lineItem._id)}>Delete</button>
+    <>
+      {!showLineItem
+        ? (
+          <>
+            <div className='p-2 border mb-4'>
+              <SearchCategory
+                setSearchByCat={setSearchByCat}
+                searchByCat={searchByCat}
+                catOptions={catOptions}
+                handleChangeSearch={handleChangeSearch}
+                resetCat={resetCat}
+                searchByKeyWord={searchByKeyWord}
+                handleChangeKeyword={handleChangeKeyword}
+              />
             </div>
-          )}
-      </div>
-    </div>
+            <div className='d-flex justify-content-between'>
+              <h1 className='text-center pt-2'>Balance Sheet</h1>
+              <button style={{ height: '20px', backgroundColor: 'red' }} onClick={() => clearAll()}>CLEAR</button>
+              <p>Current Balence: {catCurrentBalance}</p>
+            </div>
+            <table className='table text-center'>
+              <thead>
+                <tr>
+                  <th scope='col'>Date</th>
+                  <th scope='col'>Place</th>
+                  <th scope='col'>Category</th>
+                  <th scope='col'>Withdrawal</th>
+                  <th scope='col'>Deposit</th>
+                  <th scope='col'>Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                <TableRow
+                  transactionArr={transactionArr}
+                  // currentBalance={currentBalance}
+                  displayLineItem={displayLineItem}
+                />
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div>
+            <p>{format(lineItem.date, 'LL/dd')}</p>
+            <p>Paid to: {lineItem.paidTo}</p>
+            <p>Item Category: {lineItem.category}</p>
+            <p>transaction amount: {lineItem.withdrawlAmount}</p>
+            <p>transaction amount: {lineItem.depositAmount}</p>
+            <p>Current Balance at transaction: {lineItem.currentBalance}</p>
+            <p>notes: {lineItem.notes || 'No Notes'}</p>
+            <div className='d-flex flex-row justify-content-between'>
+              <button className='btn btn-secondary mr-2' onClick={(e) => setShowLineItem(false)}>show all</button>
+              <button className='btn btn-primary' onClick={(e) => removeItem(lineItem._id)}>Delete</button>
+            </div>
+          </div>
+        )}
+    </>
   )
 }
 

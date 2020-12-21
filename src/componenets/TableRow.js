@@ -6,6 +6,7 @@ function TableRow ({ transactionArr, currentBalance, displayLineItem }) {
     <>
       {transactionArr.length ? transactionArr.map((item, index) => (
         <tr
+          style={{ padding: '1rem' }}
           key={index}
           className='table_row'
           id={item._id}

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Select ({ label, name, handleChange, optionsArr, disabled, ref, type }) {
+function Select ({ label, name, handleChange, optionsArr, disabled, ref, type = null }) {
   return (
     <>
       {label ? (<label for={name}>{label}</label>) : null}
@@ -9,7 +9,6 @@ function Select ({ label, name, handleChange, optionsArr, disabled, ref, type })
         name={name || null}
         onChange={handleChange ? (e) => handleChange(e, type) : null}
         disabled={disabled}
-        ref={ref}
       >
         <option defaultValue> -- select an option -- </option>
         {optionsArr.map((option, key) => (

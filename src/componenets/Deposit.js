@@ -35,6 +35,19 @@ function Deposit ({
         </div>
       </div>
       <div className='row px-4'>
+        <label for='paidTo'> Notes</label>
+        <div className='input-group mb-3'>
+          <textarea
+            type='text'
+            className='form-control'
+            name='notes'
+            ref={register({ required: true })}
+            disabled={toggle === 'withdrawl'}
+            onChange={(e) => handleChange(e, 'deposit')}
+          />
+        </div>
+      </div>
+      {/* <div className='row px-4'>
         <Select
           label='Account'
           name='account'
@@ -44,7 +57,7 @@ function Deposit ({
           disabled={toggle === 'withdrawl'}
           type='deposit'
         />
-      </div>
+      </div> */}
       <div className='px-2 mt-3 w-100'>
         <button type='button' className='btn-secondary p-3' onClick={() => clear()}>Clear</button>
         <button type='submit' className='btn-secondary ml-2 p-3' onClick={() => reset()}>Submit</button>

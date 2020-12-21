@@ -24,3 +24,19 @@ a {
 .table_row:active {
   transform: scale(0.99);
 }
+
+th,
+td,
+tr {
+  padding: 0.75rem !important;
+}
+
+input,
+textarea,
+select {
+  border: 2px rgba(0, 0, 0, 0.1) solid !important;
+}
+
+.btn_no-border:hover {
+  background-color: #ececf1;
+}
