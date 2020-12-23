@@ -1,0 +1,15 @@
+input {
+  border: 1px hsla(0, 0%, 0%, 0.027) solid !important;
+  width: 100%;
+  height: 2rem;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+th,
+tr,
+td {
+  padding: 0px 0px 0px 0px !important;
+  border-spacing: 0 !important;
+  height: 2rem;
+}

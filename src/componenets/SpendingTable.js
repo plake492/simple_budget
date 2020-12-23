@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { format } from 'date-fns'
 import TableRow from './TableRow'
 import SearchCategory from './SearchCategory'
+import { useStoreContext } from '../utils/GlobalState'
 
 function SpendingTable ({
-  transactionArr,
-  setTransactionArr,
-  setCurrentBalance,
   updateCurrentBalance,
   searchByCat,
   catOptions,
@@ -17,18 +15,19 @@ function SpendingTable ({
   searchByKeyWord,
   handleChangeKeyword
 }) {
+  const [state, dispatch] = useStoreContext()
+
   const [showLineItem, setShowLineItem] = useState(false)
   const [lineItem, setLineitem] = useState('')
 
   const displayLineItem = (_id) => {
-    const item = transactionArr.find(item => item._id === _id)
+    const item = state.transactionArr.find(item => item._id === _id)
     setLineitem(item)
     setShowLineItem(true)
   }
 
   const removeItem = (_id) => {
-    const newArr = transactionArr.filter(item => item._id !== _id)
-    setTransactionArr(newArr)
+    const newArr = state.transactionArr.filter(item => item._id !== _id)
     setShowLineItem(false)
     updateCurrentBalance(newArr)
   }
@@ -37,8 +36,11 @@ function SpendingTable ({
     const verify = prompt('if sure, type "yes"')
     if (verify.toLowerCase() === 'yes') {
       localStorage.clear('transactionArr')
-      setTransactionArr([])
-      setCurrentBalance(0)
+      dispatch({
+        type: 'INITIALIZE_BUDGET',
+        transactions: [],
+        currentBalance: 0
+      })
     }
   }
 
@@ -76,7 +78,7 @@ function SpendingTable ({
               </thead>
               <tbody>
                 <TableRow
-                  transactionArr={transactionArr}
+                  // transactionArr={state.transactionArr}
                   // currentBalance={currentBalance}
                   displayLineItem={displayLineItem}
                 />
