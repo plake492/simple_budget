@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react'
+import { format } from 'date-fns'
 
 const StoreContext = createContext()
 const { Provider } = StoreContext
@@ -34,6 +35,16 @@ const reducer = (state, action) => {
         ...state,
         currentBalance: action.currentBalance
       }
+    case 'UPDATE_FOCUS_MONTH' :
+      return {
+        ...state,
+        focusMonth: action.focusMonth
+      }
+    case 'UPDATE_FOCUS_YEAR' :
+      return {
+        ...state,
+        focusYear: action.year
+      }
     default:
       return state
   }
@@ -43,7 +54,9 @@ const StoreProvider = ({ value = [], ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
     originArr: [],
     transactionArr: [],
-    currentBalance: 0
+    currentBalance: 0,
+    focusMonth: format(new Date(), 'LLLL'),
+    focusYear: format(new Date(), 'uuuu')
   })
 
   return <Provider value={[state, dispatch]} {...props} />

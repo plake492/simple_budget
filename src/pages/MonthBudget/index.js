@@ -15,8 +15,8 @@ function MonthBudget () {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    reset()
     setBudgetArr([...budgetArr, budgetItem])
+    reset()
   }
 
   return (
@@ -33,18 +33,18 @@ function MonthBudget () {
             </thead>
             <tbody>
               {budgetArr.map((item, index) => (
-                <tr key={index}>
-                  <th>
+                <tr className='budget__table' key={index}>
+                  <th className='budget__table'>
                     <input
                       type='text' name='item' value={item.item} onChange={(e) => handelChange(e)}
                     />
                   </th>
-                  <td>
+                  <td className='budget__table'>
                     <input
                       type='number' name='budgeted' value={item.budgeted} onChange={(e) => handelChange(e)}
                     />
                   </td>
-                  <td>
+                  <td className='budget__table'>
                     <input
                       type='number' name='actual' value={item.actual} onChange={(e) => handelChange(e)}
                     />
@@ -53,8 +53,7 @@ function MonthBudget () {
               ))}
             </tbody>
           </table>
-
-          <form onSubmit={(e) => handleSubmit(e)} className='d-flex'>
+          <form onSubmit={(e) => handleSubmit(e)} className='d-flex budget__table'>
             <input
               ref={register({ required: true })}
               type='text'

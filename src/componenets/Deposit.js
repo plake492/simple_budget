@@ -19,7 +19,7 @@ function Deposit ({
   }
 
   return (
-    <form className='col-lg-6 px-3' onSubmit={(e) => handleSubmit(e)}>
+    <form className='col-lg-12 px-3' onSubmit={(e) => handleSubmit(e)}>
       <h1 className='mt-3'>Deposit</h1>
       <div className='row px-4'>
         <label for='amount'>Amount</label>

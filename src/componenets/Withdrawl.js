@@ -22,7 +22,7 @@ function DepositWithdrawl ({
 
   return (
     <form
-      className='col-lg-6' onSubmit={(e) => handleSubmit(e)}
+      className='col-lg-12' onSubmit={(e) => handleSubmit(e)}
     >
       <h1 className='mt-3'>Withdraw</h1>
       <div className='row px-4'>
@@ -67,6 +67,20 @@ function DepositWithdrawl ({
             type='text'
             className='form-control'
             name='paidTo'
+            ref={register({ required: true })}
+            disabled={toggle === 'deposit'}
+            onChange={(e) => handleChange(e, 'withdrawl')}
+          />
+        </div>
+      </div>
+      <div className='row px-4'>
+        <label for='paidTo'>Date</label>
+        <div className='input-group mb-3'>
+          <input
+            type='date'
+            className='form-control'
+            placeholder={Date.now()}
+            name='date'
             ref={register({ required: true })}
             disabled={toggle === 'deposit'}
             onChange={(e) => handleChange(e, 'withdrawl')}

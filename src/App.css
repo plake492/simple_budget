@@ -40,3 +40,9 @@ select {
 .btn_no-border:hover {
   background-color: #ececf1;
 }
+
+.transaction_btn {
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+}

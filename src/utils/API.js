@@ -8,7 +8,12 @@ const postBudget = (budget) => {
   localStorage.setItem('budget', JSON.stringify(budget))
 }
 
+const deleteAll = () => {
+  localStorage.clear('budget')
+}
+
 export default {
   getInitialBudget,
-  postBudget
+  postBudget,
+  deleteAll
 }

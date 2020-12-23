@@ -14,6 +14,15 @@ const updateTransactionsBalance = (arr) => arr.map((item, i) => {
   return item
 })
 
+const add$ = (o) => {
+  Object.keys(o).forEach(key => {
+    if (key === 'withdrawlAmount') { o.withdrawlAmount$ = `$${o.withdrawlAmount.toString()}` }
+    if (key === 'depositAmount') { o.depositAmount$ = `$${o.depositAmount.toString()}` }
+    if (key === 'currentBalance') { o.currentBalance$ = `$${o.currentBalance.toString()}` }
+  })
+}
+
 export {
-  updateTransactionsBalance
+  updateTransactionsBalance,
+  add$
 }

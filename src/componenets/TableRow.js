@@ -1,18 +1,15 @@
 import React from 'react'
 import { format } from 'date-fns'
-import { useStoreContext } from '../utils/GlobalState'
-
+import { add$ } from '../utils/helpers'
 function TableRow ({
-  // transactionArr,
+  transactionArr,
   currentBalance,
   displayLineItem
 }) {
-  const [state] = useStoreContext()
-  console.log('state==>>', state)
   return (
     <>
-      {state.transactionArr.length ? state.transactionArr.map((item, index) => {
-        console.log('item, index==>>', item, index)
+      {transactionArr.length ? transactionArr.map((item, index) => {
+        add$(item) // Add $ to any number
         return (
           <tr
             style={{ padding: '1rem' }}
@@ -24,13 +21,12 @@ function TableRow ({
             <th>{format(item.date, 'LL/dd')}</th>
             <td>{item.paidTo}</td>
             <td>{item.category}</td>
-            <td>{item.withdrawlAmount}</td>
-            <td>{item.depositAmount}</td>
-            <td>{item.currentBalance}</td>
-
+            <td>{item.withdrawlAmount$}</td>
+            <td>{item.depositAmount$}</td>
+            <td>{item.currentBalance$}</td>
           </tr>
         )
-      }) : (<p>no records</p>)}
+      }) : (<tr><td>no records</td></tr>)}
     </>
   )
 }

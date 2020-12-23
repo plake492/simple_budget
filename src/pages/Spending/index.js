@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react'
 import Withdrawl from '../../componenets/Withdrawl'
 import Deposit from '../../componenets/Deposit'
 import SpendingTable from '../../componenets/SpendingTable'
+
 import { uuid } from 'uuidv4'
 import { useStoreContext } from '../../utils/GlobalState'
-import API from '../../utils/API'
 import { updateTransactionsBalance } from '../../utils/helpers'
+import API from '../../utils/API'
+import './style.css'
 
 function Spending () {
   const [state, dispatch] = useStoreContext()
+
+  const underline = {
+    borderBottom: 'black 1px solid',
+    fontWeight: '700'
+  }
 
   const [catCurrentBalance, setCatCurrentBalance] = useState(0)
   const [transaction, setTransaction] = useState({})
@@ -17,6 +24,7 @@ function Spending () {
   const [catSearch, setCatSearch] = useState('')
   const [toggleType, setToggleType] = useState('') // use to togglw table from all items or single line item
   const [keyWordSearch, setKeyWordSearch] = useState('')
+  const [display, setDisplay] = useState(state.originArr.length ? 'withdrawl' : 'deposit')
   const [catOptions] = useState([
     { item: 'All', itemId: 0 },
     { item: 'Grocery', itemId: 1 },
@@ -29,8 +37,6 @@ function Spending () {
     { item: 'Undefined', itemId: 8 }
   ])
 
-  // Grab local storage on componenet load
-  // set initial state
   useEffect(() => {
     const { transactions, currentBalance } = API.getInitialBudget()
     dispatch({
@@ -59,7 +65,7 @@ function Spending () {
 
       transaction.currentBalance = balance
       transaction._id = uuid()
-      transaction.date = Date.now()
+      transaction.date = transaction.date || Date.now()
 
       API.postBudget({
         transactions: [...state.originArr, transaction],
@@ -77,8 +83,15 @@ function Spending () {
   }
 
   const updateCurrentBalance = (newArr) => {
-    const updateTransactions = updateTransactionsBalance(newArr)
-    const newBalance = updateTransactions[updateTransactions.length - 1].currentBalance
+    let updateTransactions
+    let newBalance
+    if (newArr.length) {
+      updateTransactions = updateTransactionsBalance(newArr) // From Helper Functions
+      newBalance = updateTransactions[updateTransactions.length - 1].currentBalance
+    } else {
+      updateTransactions = []
+      newBalance = 0
+    }
 
     API.postBudget({
       transactions: updateTransactions,
@@ -121,6 +134,7 @@ function Spending () {
   const resetCat = () => {
     setCatSearch('')
     dispatch({ type: 'RESET_TRANSACTION_ARR' })
+    setCatCurrentBalance(0)
   }
 
   const searchByKeyWord = (e, word) => {
@@ -156,46 +170,50 @@ function Spending () {
   return (
     <>
       <div className='container-fluid mt-5 row'>
-        <div className='col-lg-4'>
+        <div className='col-lg-3'>
           <div className='jumbotron'>
             <div className='row px-4'>
-              <Withdrawl
-                transaction={transaction}
-                setTransaction={setTransaction}
-                handleSubmit={handleSubmit}
-                catOptions={catOptions}
-                cardOptions={cardOptions}
-                toggle={toggleType}
-                setToggle={setToggleType}
-                handleChange={handleChangeTransactions}
-              />
-              <Deposit
-                transaction={transaction}
-                setTransaction={setTransaction}
-                handleSubmit={handleSubmit}
-                accountOptions={accountOptions}
-                toggle={toggleType}
-                setToggle={setToggleType}
-                handleChange={handleChangeTransactions}
-              />
+              <div className='w-100 d-flex justify-content-between px-4 mt-n4 pt-3 rounded mb-3' style={{ backgroundColor: '#C5C5C7' }}>
+                <p className='transaction_btn' style={display === 'withdrawl' ? underline : null} onClick={() => setDisplay('withdrawl')}>Withdrawl</p>
+                <p className='transaction_btn' style={display === 'deposit' ? underline : null} onClick={() => setDisplay('deposit')}>Deposit</p>
+              </div>
+              {display === 'withdrawl' ? (
+                <Withdrawl
+                  transaction={transaction}
+                  setTransaction={setTransaction}
+                  handleSubmit={handleSubmit}
+                  catOptions={catOptions}
+                  cardOptions={cardOptions}
+                  toggle={toggleType}
+                  setToggle={setToggleType}
+                  handleChange={handleChangeTransactions}
+                />
+              ) : (
+                <Deposit
+                  transaction={transaction}
+                  setTransaction={setTransaction}
+                  handleSubmit={handleSubmit}
+                  accountOptions={accountOptions}
+                  toggle={toggleType}
+                  setToggle={setToggleType}
+                  handleChange={handleChangeTransactions}
+                />
+              )}
             </div>
           </div>
         </div>
-        <div className='col-lg-8'>
-          <div className='jumbotron' style={{ paddingTop: '2rem' }}>
-            <SpendingTable
-              searchByCat={searchByCat}
-              catOptions={catOptions}
-              resetCat={resetCat}
-              handleChangeSearch={handleChangeSearch}
-              updateCurrentBalance={updateCurrentBalance}
-              catCurrentBalance={catCurrentBalance}
-              searchByKeyWord={searchByKeyWord}
-              handleChangeKeyword={handleChangeKeyword}
-            />
-          </div>
+        <div className='col-lg-9'>
+          <SpendingTable
+            searchByCat={searchByCat}
+            catOptions={catOptions}
+            resetCat={resetCat}
+            handleChangeSearch={handleChangeSearch}
+            updateCurrentBalance={updateCurrentBalance}
+            catCurrentBalance={catCurrentBalance}
+            searchByKeyWord={searchByKeyWord}
+            handleChangeKeyword={handleChangeKeyword}
+          />
         </div>
-
       </div>
     </>
   )
