@@ -9,36 +9,43 @@ const reducer = (state, action) => {
     case 'INITIALIZE_BUDGET':
       return {
         ...state,
-        originArr: action.transactions,
-        transactionArr: action.transactions,
+        orignBuget: { ...action.transactions },
+        transactionArr: { ...action.transactions },
         currentBalance: action.currentBalance || 0
       }
     case 'UPDATE_BUDGET_INSTANCE':
       return {
         ...state,
+        targetDate: action.targetDate,
         currentBalance: action.currentBalance,
-        transactionArr: [...state.transactionArr, action.transaction],
-        originArr: [...state.originArr, action.transaction]
+        transactionArr: { ...action.transactions },
+        orignBuget: { ...action.transactions }
       }
     case 'UPDATE_TRANSACTION_ARR':
+      console.log('action==>>', action)
       return {
         ...state,
-        transactionArr: action.arr
+        transactionArr: { [action.targetDate]: [...action.arr] }
       }
     case 'RESET_TRANSACTION_ARR':
       return {
         ...state,
-        transactionArr: state.originArr
+        transactionArr: state.orignBuget
       }
     case 'UPDATE_CURRENT_BUDGET' :
       return {
         ...state,
         currentBalance: action.currentBalance
       }
+    case 'UPDATE_FOCUS_DATE' :
+      return {
+        ...state,
+        targetDate: action.date
+      }
     case 'UPDATE_FOCUS_MONTH' :
       return {
         ...state,
-        focusMonth: action.focusMonth
+        focusMonth: action.month
       }
     case 'UPDATE_FOCUS_YEAR' :
       return {
@@ -52,11 +59,12 @@ const reducer = (state, action) => {
 
 const StoreProvider = ({ value = [], ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
-    originArr: [],
-    transactionArr: [],
+    orignBuget: {},
+    transactionArr: {},
     currentBalance: 0,
     focusMonth: format(new Date(), 'LLLL'),
-    focusYear: format(new Date(), 'uuuu')
+    focusYear: format(new Date(), 'uuuu'),
+    targetDate: format(new Date(), 'LLLL') + '_' + format(new Date(), 'uuuu')
   })
 
   return <Provider value={[state, dispatch]} {...props} />

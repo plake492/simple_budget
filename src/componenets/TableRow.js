@@ -8,7 +8,7 @@ function TableRow ({
 }) {
   return (
     <>
-      {transactionArr.length ? transactionArr.map((item, index) => {
+      {transactionArr ? transactionArr.map((item, index) => {
         add$(item) // Add $ to any number
         return (
           <tr

@@ -73,7 +73,7 @@ function DepositWithdrawl ({
           />
         </div>
       </div>
-      <div className='row px-4'>
+      {/* <div className='row px-4'>
         <label for='paidTo'>Date</label>
         <div className='input-group mb-3'>
           <input
@@ -86,7 +86,7 @@ function DepositWithdrawl ({
             onChange={(e) => handleChange(e, 'withdrawl')}
           />
         </div>
-      </div>
+      </div> */}
       <div className='row px-4'>
         <label for='paidTo'> Notes</label>
         <div className='input-group mb-3'>

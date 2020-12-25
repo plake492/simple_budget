@@ -24,7 +24,7 @@ function Spending () {
   const [catSearch, setCatSearch] = useState('')
   const [toggleType, setToggleType] = useState('') // use to togglw table from all items or single line item
   const [keyWordSearch, setKeyWordSearch] = useState('')
-  const [display, setDisplay] = useState(state.originArr.length ? 'withdrawl' : 'deposit')
+  const [display, setDisplay] = useState(state.orignBuget.length ? 'withdrawl' : 'deposit')
   const [catOptions] = useState([
     { item: 'All', itemId: 0 },
     { item: 'Grocery', itemId: 1 },
@@ -42,7 +42,8 @@ function Spending () {
     dispatch({
       type: 'INITIALIZE_BUDGET',
       transactions: transactions,
-      currentBalance: currentBalance
+      currentBalance: currentBalance,
+      targetDate: state.focusMonth + '_' + state.focusYear
     })
   }, [])
 
@@ -67,15 +68,17 @@ function Spending () {
       transaction._id = uuid()
       transaction.date = transaction.date || Date.now()
 
-      API.postBudget({
-        transactions: [...state.originArr, transaction],
-        currentBalance: balance
-      })
+      const targetDate = state.targetDate
+
+      const { transactions, currentBalance } = constructBudgetObj(transaction, balance, targetDate)
+
+      API.postBudget({ transactions, currentBalance })
 
       dispatch({
         type: 'UPDATE_BUDGET_INSTANCE',
-        currentBalance: balance,
-        transaction: transaction
+        targetDate: targetDate,
+        transactions: transactions,
+        currentBalance: currentBalance
       })
     }
     setTransaction({})
@@ -85,7 +88,7 @@ function Spending () {
   const updateCurrentBalance = (newArr) => {
     let updateTransactions
     let newBalance
-    if (newArr.length) {
+    if (newArr.length) { // Account for only one transaction present on deletion
       updateTransactions = updateTransactionsBalance(newArr) // From Helper Functions
       newBalance = updateTransactions[updateTransactions.length - 1].currentBalance
     } else {
@@ -93,20 +96,22 @@ function Spending () {
       newBalance = 0
     }
 
+    const transactions = {
+      ...state.transactionArr,
+      [state.targetDate]: [...updateTransactions]
+    }
+
     API.postBudget({
-      transactions: updateTransactions,
-      currentBalance: newBalance
+      currentBalance: newBalance,
+      transactions
     })
 
     dispatch({
       type: 'INITIALIZE_BUDGET',
-      transactions: updateTransactions,
-      currentBalance: newBalance
+      transactions: transactions,
+      currentBalance: newBalance,
+      targetDate: state.targetDate
     })
-
-    const budgetInstance = API.getInitialBudget()
-    budgetInstance.transactions = updateTransactions
-    API.postBudget(budgetInstance)
   }
 
   const handleChangeSearch = e => {
@@ -122,12 +127,13 @@ function Spending () {
       return resetCat()
     }
     dispatch({ type: 'RESET_TRANSACTION_ARR' })
-    const filterdTransactions = state.originArr.filter(item => item.category === catSearch)
+    const filterdTransactions = state.orignBuget[state.targetDate].filter(item => item.category === catSearch)
     const filterdBalance = filterdTransactions.reduce((acc, cur) => (acc += cur.withdrawlAmount), 0)
     setCatCurrentBalance(filterdBalance)
     dispatch({
       type: 'UPDATE_TRANSACTION_ARR',
-      arr: filterdTransactions
+      arr: filterdTransactions,
+      targetDate: state.targetDate
     })
   }
 
@@ -142,7 +148,7 @@ function Spending () {
     if (searchByKeyWord) {
       const searchRes = new Set()
 
-      state.originArr.forEach(item => {
+      state.orignBuget[state.targetDate].forEach(item => {
         const keys = Object.keys(item)
         keys.forEach(key => {
           if (typeof item[key] === 'string') {
@@ -157,15 +163,29 @@ function Spending () {
           }
         })
       })
+
       dispatch({
         type: 'UPDATE_TRANSACTION_ARR',
-        arr: [...searchRes]
+        arr: [...searchRes],
+        targetDate: state.targetDate
       })
       setKeyWordSearch('')
     }
   }
 
   const handleChangeKeyword = (e) => setKeyWordSearch(e.target.value)
+
+  const constructBudgetObj = (transaction, balance, targetDate = state.targetDate) => {
+    return {
+      transactions: {
+        ...state.transactionArr,
+        [targetDate]: state.transactionArr[targetDate]
+          ? [...state.transactionArr[targetDate], transaction]
+          : [transaction]
+      },
+      currentBalance: balance
+    }
+  }
 
   return (
     <>

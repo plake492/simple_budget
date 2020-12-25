@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { format, toDate } from 'date-fns'
+import { format } from 'date-fns'
 import TableRow from './TableRow'
 import SearchCategory from './SearchCategory'
 import { useStoreContext } from '../utils/GlobalState'
@@ -28,13 +28,13 @@ function SpendingTable ({
   const [lineItem, setLineitem] = useState('')
 
   const displayLineItem = (_id) => {
-    const item = state.transactionArr.find(item => item._id === _id)
+    const item = state.transactionArr[state.targetDate].find(item => item._id === _id)
     setLineitem(item)
     setShowLineItem(true)
   }
 
   const removeItem = (_id) => {
-    const newArr = state.transactionArr.filter(item => item._id !== _id)
+    const newArr = state.transactionArr[state.targetDate].filter(item => item._id !== _id)
     setShowLineItem(false)
     updateCurrentBalance(newArr)
   }
@@ -48,6 +48,16 @@ function SpendingTable ({
         transactions: [],
         currentBalance: 0
       })
+    }
+  }
+
+  const updateDate = (value, month) => {
+    if (month) {
+      dispatch({ type: 'UPDATE_FOCUS_DATE', date: value + '_' + state.focusYear })
+      dispatch({ type: 'UPDATE_FOCUS_MONTH', month: value })
+    } else {
+      dispatch({ type: 'UPDATE_FOCUS_DATE', date: state.focusMonth + '_' + value })
+      dispatch({ type: 'UPDATE_FOCUS_YEAR', year: value })
     }
   }
 
@@ -65,6 +75,7 @@ function SpendingTable ({
                 resetCat={resetCat}
                 searchByKeyWord={searchByKeyWord}
                 handleChangeKeyword={handleChangeKeyword}
+                hasArr={state.orignBuget[state.targetDate]}
               />
             </div>
             <div className='jumbotron' style={{ paddingTop: '2rem' }}>
@@ -74,7 +85,7 @@ function SpendingTable ({
                     <p
                       style={state.focusMonth === month ? underline : null}
                       key={index}
-                      onClick={() => dispatch({ type: 'UPDATE_FOCUS_MONTH', month: month })}
+                      onClick={() => updateDate(month, true)}
                     >{month}
                     </p>
                   ))}
@@ -82,7 +93,7 @@ function SpendingTable ({
                 <div>
                   <select
                     className='form-control ml-2'
-                    onChange={(e) => dispatch({ type: 'UPDATE_FOCUS_YEAR', year: e.target.value })}
+                    onChange={(e) => updateDate(e.target.value, false)}
                   >
                     <option value=''>Year</option><option value='2018'>2018</option><option value='2019'>2019</option><option value='2020'>2020</option><option value='2021'>2021</option><option value='2022'>2022</option>
                   </select>
@@ -106,7 +117,7 @@ function SpendingTable ({
                 </thead>
                 <tbody>
                   <TableRow
-                    transactionArr={state.transactionArr}
+                    transactionArr={state.transactionArr[state.targetDate] || null}
                     displayLineItem={displayLineItem}
                   />
                 </tbody>

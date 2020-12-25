@@ -1,7 +1,7 @@
 import React from 'react'
 import Select from './Select'
 
-function SearchCategory ({ searchByCat, catOptions, handleChangeSearch, resetCat, searchByKeyWord, handleChangeKeyword }) {
+function SearchCategory ({ searchByCat, catOptions, handleChangeSearch, resetCat, searchByKeyWord, handleChangeKeyword, hasArr }) {
   return (
     <>
       <div className='row'>
@@ -24,7 +24,9 @@ function SearchCategory ({ searchByCat, catOptions, handleChangeSearch, resetCat
         Reset
           </button>
         </form>
-        <form className='col-6' onSubmit={(e) => searchByKeyWord(e)}>
+        <form
+          className='col-6' onSubmit={(e) => searchByKeyWord(e)}
+        >
           <div className='d-flex flex-row justify-content-between'>
             <label className='col-6 pt-3'>Search by key word / number: </label>
             <input
@@ -32,6 +34,7 @@ function SearchCategory ({ searchByCat, catOptions, handleChangeSearch, resetCat
               type='text'
               className='form-control col-6'
               onChange={(e) => handleChangeKeyword(e)}
+              disabled={!hasArr ? 'disabled' : null}
             />
           </div>
         </form>
