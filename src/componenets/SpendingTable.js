@@ -16,12 +16,6 @@ function SpendingTable ({
   searchByKeyWord,
   handleChangeKeyword
 }) {
-  const underline = {
-    borderBottom: 'black 1px solid',
-    color: 'hsl(225, 2, 80)'
-  }
-
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   const [state, dispatch] = useStoreContext()
 
   const [showLineItem, setShowLineItem] = useState(false)
@@ -42,22 +36,15 @@ function SpendingTable ({
   const clearAll = () => {
     const verify = prompt('if sure, type "yes"')
     API.deleteAll()
+    if (verify === null) {
+      return
+    }
     if (verify.toLowerCase() === 'yes') {
-      dispatch({
+      return dispatch({
         type: 'INITIALIZE_BUDGET',
         transactions: [],
         currentBalance: 0
       })
-    }
-  }
-
-  const updateDate = (value, month) => {
-    if (month) {
-      dispatch({ type: 'UPDATE_FOCUS_DATE', date: value + '_' + state.focusYear })
-      dispatch({ type: 'UPDATE_FOCUS_MONTH', month: value })
-    } else {
-      dispatch({ type: 'UPDATE_FOCUS_DATE', date: state.focusMonth + '_' + value })
-      dispatch({ type: 'UPDATE_FOCUS_YEAR', year: value })
     }
   }
 
@@ -79,26 +66,6 @@ function SpendingTable ({
               />
             </div>
             <div className='jumbotron' style={{ paddingTop: '2rem' }}>
-              <div className='d-flex flex-row justify-content-end'>
-                <div className='flex-fill month_select d-flex justify-content-between px-4 pt-3 rounded mb-4' style={{ backgroundColor: '#DEDEE0' }}>
-                  {months.map((month, index) => (
-                    <p
-                      style={state.focusMonth === month ? underline : null}
-                      key={index}
-                      onClick={() => updateDate(month, true)}
-                    >{month}
-                    </p>
-                  ))}
-                </div>
-                <div>
-                  <select
-                    className='form-control ml-2'
-                    onChange={(e) => updateDate(e.target.value, false)}
-                  >
-                    <option value=''>Year</option><option value='2018'>2018</option><option value='2019'>2019</option><option value='2020'>2020</option><option value='2021'>2021</option><option value='2022'>2022</option>
-                  </select>
-                </div>
-              </div>
               <div className='d-flex justify-content-between'>
                 <h1 className='text-center pt-2'>Balance Sheet</h1>
                 <button style={{ height: '20px', backgroundColor: 'red' }} onClick={() => clearAll()}>CLEAR</button>
