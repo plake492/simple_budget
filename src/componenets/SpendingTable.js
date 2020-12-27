@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { format } from 'date-fns'
 import TableRow from './TableRow'
 import SearchCategory from './SearchCategory'
+import { format } from 'date-fns'
 import { useStoreContext } from '../utils/GlobalState'
 import API from '../utils/API'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 function SpendingTable ({
   updateCurrentBalance,
@@ -16,6 +17,11 @@ function SpendingTable ({
   searchByKeyWord,
   handleChangeKeyword
 }) {
+  const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? 'hsl(240,14,90)' : null,
+    // padding: 8,
+    width: '%100'
+  })
   const [state, dispatch] = useStoreContext()
 
   const [showLineItem, setShowLineItem] = useState(false)
@@ -46,6 +52,18 @@ function SpendingTable ({
         currentBalance: 0
       })
     }
+  }
+
+  const onDragEnd = (item) => {
+    if (!item.destination) {
+      return
+    }
+    const startIndex = item.source.index
+    const endIndex = item.destination.index
+    const result = Array.from(state.orignBuget[state.targetDate])
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+    updateCurrentBalance(result)
   }
 
   return (
@@ -82,12 +100,23 @@ function SpendingTable ({
                     <th scope='col'>Available</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <TableRow
-                    transactionArr={state.transactionArr[state.targetDate] || null}
-                    displayLineItem={displayLineItem}
-                  />
-                </tbody>
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId='droppable'>
+                    {(provided, snapshot) => (
+                      <tbody
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        style={getListStyle(snapshot.isDraggingOver)}
+                      >
+                        <TableRow
+                          transactionArr={state.transactionArr[state.targetDate] || null}
+                          displayLineItem={displayLineItem}
+                        />
+                        {provided.placeholder}
+                      </tbody>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </table>
             </div>
           </>
