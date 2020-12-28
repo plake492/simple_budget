@@ -2,19 +2,13 @@ import React from 'react'
 import { format } from 'date-fns'
 import { add$ } from '../utils/helpers'
 import { Draggable } from 'react-beautiful-dnd'
+import { getItemStyle } from '../utils/styles'
 
 function TableRow ({
   transactionArr,
   currentBalance,
   displayLineItem
 }) {
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    userSelect: 'none',
-    padding: '1rem',
-    background: isDragging ? '#e8e8ee' : null,
-    ...draggableStyle
-  })
-
   return (
     <>
       {transactionArr

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import TableRow from './TableRow'
+import LineItem from './LineItem'
 import SearchCategory from './SearchCategory'
-import { format } from 'date-fns'
 import { useStoreContext } from '../utils/GlobalState'
 import API from '../utils/API'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { getListStyle } from '../utils/styles'
 
 function SpendingTable ({
   updateCurrentBalance,
@@ -17,11 +18,6 @@ function SpendingTable ({
   searchByKeyWord,
   handleChangeKeyword
 }) {
-  const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'hsl(240,14,90)' : null,
-    // padding: 8,
-    width: '%100'
-  })
   const [state, dispatch] = useStoreContext()
 
   const [showLineItem, setShowLineItem] = useState(false)
@@ -121,19 +117,11 @@ function SpendingTable ({
             </div>
           </>
         ) : (
-          <div>
-            <p>{format(lineItem.date, 'LL/dd')}</p>
-            <p>Paid to: {lineItem.paidTo}</p>
-            <p>Item Category: {lineItem.category}</p>
-            <p>transaction amount: {lineItem.withdrawlAmount}</p>
-            <p>transaction amount: {lineItem.depositAmount}</p>
-            <p>Current Balance at transaction: {lineItem.currentBalance}</p>
-            <p>notes: {lineItem.notes || 'No Notes'}</p>
-            <div className='d-flex flex-row justify-content-between'>
-              <button className='btn btn-secondary mr-2' onClick={(e) => setShowLineItem(false)}>show all</button>
-              <button className='btn btn-primary' onClick={(e) => removeItem(lineItem._id)}>Delete</button>
-            </div>
-          </div>
+          <LineItem
+            lineItem={lineItem}
+            setShowLineItem={setShowLineItem}
+            removeItem={removeItem}
+          />
         )}
     </>
   )

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Withdrawl from '../../componenets/Withdrawl'
 import Deposit from '../../componenets/Deposit'
 import SpendingTable from '../../componenets/SpendingTable'
-
 import { uuid } from 'uuidv4'
 import { useStoreContext } from '../../utils/GlobalState'
 import { updateTransactionsBalance } from '../../utils/helpers'
@@ -11,18 +10,12 @@ import './style.css'
 
 function Spending () {
   const [state, dispatch] = useStoreContext()
-
-  const underline = {
-    borderBottom: 'black 1px solid',
-    fontWeight: '700'
-  }
-
   const [catCurrentBalance, setCatCurrentBalance] = useState(0)
-  const [transaction, setTransaction] = useState({})
-  const [accountOptions] = useState([{ item: 'Checking', itemId: 1 }, { item: 'Savings', itemId: 2 }])
-  const [cardOptions] = useState([{ item: '**** **** **** 0000', itemId: 1 }])
+  const [transaction, setTransaction] = useState({}) // object for constructing transactions to be sent to store
+  const [accountOptions] = useState([{ item: 'Checking', itemId: 1 }, { item: 'Savings', itemId: 2 }]) // TODO move this to db to allow user inputed acounts
+  const [cardOptions] = useState([{ item: '**** **** **** 0000', itemId: 1 }]) // TODO move this to db to allow user inputed cards
   const [catSearch, setCatSearch] = useState('')
-  const [toggleType, setToggleType] = useState('') // use to togglw table from all items or single line item
+  const [toggleType, setToggleType] = useState('') // use to togglwetable from all items or single line item
   const [keyWordSearch, setKeyWordSearch] = useState('')
   const [display, setDisplay] = useState(state.orignBuget.length ? 'withdrawl' : 'deposit')
   const [catOptions] = useState([
@@ -35,7 +28,12 @@ function Spending () {
     { item: 'Gas', itemId: 6 },
     { item: 'Health', itemId: 7 },
     { item: 'Undefined', itemId: 8 }
-  ])
+  ]) // TODO allow users to add categories
+
+  const underline = {
+    borderBottom: 'black 1px solid',
+    fontWeight: '700'
+  }
 
   useEffect(() => {
     const { transactions, currentBalance } = API.getInitialBudget()
@@ -43,7 +41,7 @@ function Spending () {
       type: 'INITIALIZE_BUDGET',
       transactions: transactions,
       currentBalance: currentBalance,
-      targetDate: state.focusMonth + '_' + state.focusYear
+      targetDate: state.targetDate
     })
   }, [])
 
@@ -69,7 +67,6 @@ function Spending () {
       transaction.date = transaction.date || Date.now()
 
       const targetDate = state.targetDate
-
       const { transactions, currentBalance } = constructBudgetObj(transaction, balance, targetDate)
 
       API.postBudget({ transactions, currentBalance })
@@ -114,9 +111,7 @@ function Spending () {
     })
   }
 
-  const handleChangeSearch = e => {
-    setCatSearch(e.target.value)
-  }
+  const handleChangeSearch = e => setCatSearch(e.target.value)
 
   const searchByCat = (e) => {
     e.preventDefault()
